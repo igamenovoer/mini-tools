@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n
+    restart: always
+    user: "1000:1000"  # Use a non-root user for security
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - userdata:/home/node/userdata
+    environment:
+      # --- Existing Environment Variables ---
+      - WEBHOOK_URL=http://localhost:5678/
+      - HTTP_PROXY=http://host.docker.internal:30080
+      - HTTPS_PROXY=http://host.docker.internal:30080
+      - NO_PROXY=localhost,127.0.0.1
+
+      # --- USER & PASSWORD CONFIGURATION START ---
+      # Set the password policy to allow simple passwords.
+      - N8N_USER_MANAGEMENT_PASSWORD_STRENGTH_GUIDE=weak
+
+volumes:
+  n8n_data:
+  userdata:
+    driver: local
+    driver_opts:
+      type: none
+      device: D:\docker-space\n8n-output
+      o: bind
